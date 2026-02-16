@@ -38,6 +38,7 @@ int main()
         return -1;
     }
     
+    // Create a window
     glfwSetWindowAspectRatio(window, 16, 9);
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
