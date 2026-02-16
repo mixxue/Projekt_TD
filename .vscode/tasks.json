@@ -6,7 +6,7 @@
             "type": "shell",
             "command": "g++",
             "args": [
-                "src/main.cpp",
+                "src/*.cpp",
                 "src/glad.c",
                 "-Iinclude",
                 "-Llib",
@@ -15,7 +15,6 @@
                 "-lgdi32",
                 "-luser32",
                 "-lshell32",
-                "-mconsole",
                 "-o",
                 "main"
             ],
