@@ -2,39 +2,23 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build & Run OpenGL",
+            "label": "build SDL2 app",
             "type": "shell",
             "command": "g++",
             "args": [
-                "src/*.cpp",
-                "src/glad.c",
-                "-Iinclude",
-                "-Llib",
-                "-lglfw3",
-                "-lopengl32",
-                "-lgdi32",
-                "-luser32",
-                "-lshell32",
-                "-o",
-                "main"
+                "-I", "${workspaceFolder}/src/include",
+                "-L", "${workspaceFolder}/src/lib",
+                "main.cpp",
+                "-o", "${workspaceFolder}/main.exe",
+                "-lmingw32", "-lSDL2main", "-lSDL2"
             ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": ["$gcc"],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
-        },
-        {
-            "label": "Run OpenGL",
-            "type": "shell",
-            "command": ".\\main.exe",
-            "dependsOn": "Build & Run OpenGL",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         }
     ]
 }
