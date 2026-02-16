@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Renderer.h"
+#include "Map.h"
 #include "Texture.h"
 
 // Window size
@@ -36,7 +37,8 @@ int main()
         glfwTerminate();
         return -1;
     }
-
+    
+    glfwSetWindowAspectRatio(window, 16, 9);
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -59,11 +61,9 @@ int main()
     Renderer renderer(currentWidth, currentHeight);
 
     // Load texture
-    Texture catTex("assets/textures/pop_cat.png",
-                   GL_TEXTURE_2D,
-                   GL_TEXTURE0,
-                   GL_RGBA,
-                   GL_UNSIGNED_BYTE);
+    
+    // Create map
+    Map gameMap("assets/maps/map1.txt", 32);
 
     // ===============================
     // Render loop
@@ -73,18 +73,16 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // Get width and height of window after resize
         int width, height;
-		glfwGetFramebufferSize(window, &width, &height);
+        glfwGetFramebufferSize(window, &width, &height);
 
-		// Update renderer with new size
-		renderer.setScreenSize(width, height);
+        // Update renderer's screen size
+        renderer.setScreenSize(width, height);
 
-		float squareSize = std::min(width, height);
-		float center_x = (width - squareSize) / 2.0f;
-		float center_y = (height - squareSize) / 2.0f;
+        renderer.drawSquare(0.0f, 0.0f, (float)width, (float)height, 0.0f, 0.8f, 1.0f);
 
-		renderer.drawSquare(center_x, center_y, width, height, 1.0f, 0.0f, 0.0f);
-        renderer.drawSquare(400, 200, 512, 512, 1.0f, 1.0f, 1.0f, catTex.ID);
+        gameMap.draw(renderer);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
