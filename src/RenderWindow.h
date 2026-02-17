@@ -1,6 +1,6 @@
 #pragma once
 #include<SDL2/SDL.h>
-#include<SDL2/SDL_test_images.h>
+#include<SDL2/SDL_image.h>
 
 class RenderWindow
 {

@@ -8,7 +8,11 @@
             "args": [
                 "-NoProfile",
                 "-ExecutionPolicy", "Bypass",
-                "-File", "${workspaceFolder}/build.ps1"
+                "-File", "${workspaceFolder}/build.ps1",
+                "-lmingw32",
+                "-lSDL2main",
+                "-lSDL2",
+                "-lSDL2_image"
             ],
             "group": {
                 "kind": "build",
