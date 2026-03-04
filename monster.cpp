@@ -15,10 +15,11 @@ enum ElementType {
 };
 
 //////////////////////////////////////////////////////////////
-// Monster Base
+// Monster Class
 
 class Enemy {
 public:
+
     float hp;
     bool alive;
     ElementType element;
@@ -30,6 +31,7 @@ public:
     }
 
     std::string getElementName() {
+
         switch (element) {
         case ELEMENT_FIRE: return "Fire";
         case ELEMENT_WATER: return "Water";
@@ -38,103 +40,95 @@ public:
         case ELEMENT_WIND: return "Wind";
         case ELEMENT_EARTH: return "Earth";
         }
+
         return "";
     }
 
     void takeDamage(float dmg) {
+
+        if (!alive) {
+            std::cout << "Monster already dead\n";
+            return;
+        }
+
         hp -= dmg;
-        std::cout << "HP left: " << hp << "\n";
+
         if (hp <= 0) {
+            hp = 0;
             alive = false;
+
+            std::cout << "HP left: " << hp << "\n";
             std::cout << "Monster Dead\n";
+        }
+        else {
+            std::cout << "HP left: " << hp << "\n";
         }
     }
 };
 
 //////////////////////////////////////////////////////////////
-// Damage Multiplier System
+// Damage Multiplier
 
 float getDamageMultiplier(ElementType tower,
                           ElementType monster) {
 
-    // 🔥 Fire Monster
-    if (monster == ELEMENT_FIRE &&
-        tower == ELEMENT_WATER)
+    if (monster == ELEMENT_FIRE && tower == ELEMENT_WATER)
         return 1.5f;
 
-    // 💧 Water Monster
-    if (monster == ELEMENT_WATER &&
-        tower == ELEMENT_LIGHTNING)
+    if (monster == ELEMENT_WATER && tower == ELEMENT_LIGHTNING)
         return 1.5f;
 
-    // ❄ Ice Monster
-    if (monster == ELEMENT_ICE &&
-        tower == ELEMENT_FIRE)
+    if (monster == ELEMENT_ICE && tower == ELEMENT_FIRE)
         return 1.5f;
 
-    // ⚡ Lightning Monster
-    if (monster == ELEMENT_LIGHTNING &&
-        tower == ELEMENT_EARTH)
+    if (monster == ELEMENT_LIGHTNING && tower == ELEMENT_EARTH)
         return 1.5f;
 
-    // 🌪 Wind Monster
-    if (monster == ELEMENT_WIND &&
-        tower == ELEMENT_FIRE)
+    if (monster == ELEMENT_WIND && tower == ELEMENT_FIRE)
         return 1.5f;
 
-    // 🌍 Earth Monster
-    if (monster == ELEMENT_EARTH &&
-        tower == ELEMENT_WIND)
+    if (monster == ELEMENT_EARTH && tower == ELEMENT_WIND)
         return 1.5f;
 
     return 1.0f;
 }
 
 //////////////////////////////////////////////////////////////
-// CC Strength System
+// CC Multiplier
 
 float getCCMultiplier(ElementType tower,
                       ElementType monster) {
 
-    // Fire Monster โดน Ice CC แรง
-    if (monster == ELEMENT_FIRE &&
-        tower == ELEMENT_ICE)
+    if (monster == ELEMENT_FIRE && tower == ELEMENT_ICE)
         return 1.5f;
 
-    // Water Monster โดน Wind CC แรง
-    if (monster == ELEMENT_WATER &&
-        tower == ELEMENT_WIND)
+    if (monster == ELEMENT_WATER && tower == ELEMENT_WIND)
         return 1.5f;
 
-    // Ice Monster โดน Lightning CC แรง
-    if (monster == ELEMENT_ICE &&
-        tower == ELEMENT_LIGHTNING)
+    if (monster == ELEMENT_ICE && tower == ELEMENT_LIGHTNING)
         return 1.5f;
 
-    // Lightning Monster โดน Ice CC แรง
-    if (monster == ELEMENT_LIGHTNING &&
-        tower == ELEMENT_ICE)
+    if (monster == ELEMENT_LIGHTNING && tower == ELEMENT_ICE)
         return 1.5f;
 
-    // Wind Monster โดน Water CC แรง
-    if (monster == ELEMENT_WIND &&
-        tower == ELEMENT_WATER)
+    if (monster == ELEMENT_WIND && tower == ELEMENT_WATER)
         return 1.5f;
 
-    // Earth Monster โดน Fire CC แรง
-    if (monster == ELEMENT_EARTH &&
-        tower == ELEMENT_FIRE)
+    if (monster == ELEMENT_EARTH && tower == ELEMENT_FIRE)
         return 1.5f;
 
     return 1.0f;
 }
 
 //////////////////////////////////////////////////////////////
-// Example Attack
+// Tower Attack
 
 void towerAttack(Enemy* monster,
                  ElementType towerElement,
                  float baseDamage) {
+
+    if (!monster->alive)
+        return;
 
     float dmgMultiplier =
         getDamageMultiplier(towerElement,
@@ -146,9 +140,9 @@ void towerAttack(Enemy* monster,
 
     float finalDamage = baseDamage * dmgMultiplier;
 
-    std::cout << "Tower Element: " << towerElement
-              << " -> Monster: "
-              << monster->getElementName() << "\n";
+    std::cout << "\nTower Attack -> "
+              << monster->getElementName()
+              << " Monster\n";
 
     std::cout << "Damage Multiplier: x"
               << dmgMultiplier << "\n";
@@ -160,7 +154,7 @@ void towerAttack(Enemy* monster,
 }
 
 //////////////////////////////////////////////////////////////
-// Create 6 Monsters
+// Main Simulation
 
 int main() {
 
@@ -173,9 +167,28 @@ int main() {
     monsters.push_back(new Enemy(200, ELEMENT_WIND));
     monsters.push_back(new Enemy(200, ELEMENT_EARTH));
 
-    // ตัวอย่างยิงด้วยป้อมน้ำ
-    towerAttack(monsters[0], ELEMENT_WATER, 50);
+    ElementType towerElement = ELEMENT_WATER;
+    float towerDamage = 50;
+
+    while (!monsters.empty()) {
+
+        Enemy* target = monsters.front(); // ยิงตัวหน้าสุด
+
+        towerAttack(target,
+                    towerElement,
+                    towerDamage);
+
+        if (!target->alive) {
+
+            delete target;
+
+            monsters.erase(monsters.begin());
+
+            std::cout << "Monster removed from lane\n";
+        }
+    }
+
+    std::cout << "\nAll monsters defeated!\n";
 
     return 0;
 }
-
